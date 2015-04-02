@@ -1,0 +1,16 @@
+#!/bin/bash
+DIR=$(dirname $(realpath $0)) 
+CHANNEL_FILE=$DIR/radio.dat
+
+PLAYLIST=$(sed -n "s/$1 //p" $CHANNEL_FILE)
+echo $PLAYLIST
+if [ "x$PLAYLIST" == "x" ]
+then
+    echo "Channel not found. Select from:"
+    cat $CHANNEL_FILE
+    exit 1
+fi
+
+#mplayer -really-quiet -playlist $PLAYLIST
+mplayer -playlist $PLAYLIST
+
