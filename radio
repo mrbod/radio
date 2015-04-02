@@ -1,8 +1,20 @@
 #!/bin/bash
 DIR=$(dirname $(realpath $0)) 
 CHANNEL_FILE=$DIR/radio.dat
+PID_FILE=/tmp/radio.pid
 
-PLAYLIST=$(sed -n "s/$1 //p" $CHANNEL_FILE)
+if [ -e $PID_FILE ]
+then
+    kill $(cat $PID_FILE)
+    rm -f $PID_FILE
+fi
+
+if [ "x$1" == "xstop" ]
+then
+    exit 0
+fi
+
+PLAYLIST=$(sed -n "/^$1/ { s/$1 //p; x }" $CHANNEL_FILE)
 echo $PLAYLIST
 if [ "x$PLAYLIST" == "x" ]
 then
@@ -11,6 +23,6 @@ then
     exit 1
 fi
 
-#mplayer -really-quiet -playlist $PLAYLIST
-mplayer -playlist $PLAYLIST
+mplayer -really-quiet -playlist $PLAYLIST &
+echo $! > $PID_FILE
 
