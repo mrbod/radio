@@ -3,6 +3,12 @@ DIR=$(dirname $(realpath $0))
 CHANNEL_FILE=$DIR/radio.dat
 PID_FILE=/tmp/radio.pid
 
+if [ "x$1" == "xlist" ]
+then
+    cat $CHANNEL_FILE
+    exit 0
+fi
+
 if [ -e $PID_FILE ]
 then
     kill $(cat $PID_FILE)
