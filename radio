@@ -22,6 +22,7 @@ fi
 
 PLAYLIST=$(sed -n "/^$1/ { s/$1 //p; x }" $CHANNEL_FILE)
 echo $PLAYLIST
+
 if [ "x$PLAYLIST" == "x" ]
 then
     echo "Channel not found. Select from:"
