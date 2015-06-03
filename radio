@@ -1,26 +1,46 @@
 #!/bin/bash
 DIR=$(dirname $(realpath $0)) 
 CHANNEL_FILE=$DIR/radio.dat
-PID_FILE=/tmp/radio.pid
+PID_FILE=/tmp/radio_$USER.pid
 
-if [ "x$1" == "xlist" ]
+CMD=$1
+shift
+
+if [ "x$CMD" == "x" ]
 then
-    cat $CHANNEL_FILE
-    exit 0
+    CMD=list
 fi
 
 if [ -e $PID_FILE ]
 then
-    kill $(cat $PID_FILE)
+    CURPID=$(head -n 1 $PID_FILE)
+    CURSHA=$(tail -n 1 $PID_FILE)
+fi
+
+if [ "x$CMD" == "xlist" ]
+then
+    if [ "x$CURSHA" != "x" ]
+    then
+        echo "Playing:"
+        echo $CURSHA
+    fi
+    echo "Channels:"
+    cat $CHANNEL_FILE
+    exit 0
+fi
+
+if [ "x$CURPID" != "x" ]
+then
+    kill $CURPID
     rm -f $PID_FILE
 fi
 
-if [ "x$1" == "xstop" ]
+if [ "x$CMD" == "xstop" ]
 then
     exit 0
 fi
 
-PLAYLIST=$(sed -n "/^$1/ { s/$1 //p; x }" $CHANNEL_FILE)
+PLAYLIST=$(sed -n "/^$CMD/ { s/$CMD //p; x }" $CHANNEL_FILE)
 echo $PLAYLIST
 if [ "x$PLAYLIST" == "x" ]
 then
@@ -31,4 +51,5 @@ fi
 
 mplayer -really-quiet -playlist $PLAYLIST &
 echo $! > $PID_FILE
+echo "$CMD $PLAYLIST" >> $PID_FILE
 
