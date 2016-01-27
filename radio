@@ -8,21 +8,32 @@ shift
 
 if [ "x$CMD" == "x" ]
 then
-    CMD=list
+    CMD=$(basename $0)
+    CMD=${CMD^^}
+    echo $CMD
+    if ! echo $CMD | grep -q '^P[1-4]$'
+    then
+        CMD=list
+    fi
 fi
 
 if [ -e $PID_FILE ]
 then
     CURPID=$(head -n 1 $PID_FILE)
-    CURSHA=$(tail -n 1 $PID_FILE)
+    CURCHA=$(tail -n 1 $PID_FILE)
+    if ! ps $CURPID | grep -q mplayer
+    then
+        CURPID=
+        CURCHA=
+    fi
 fi
 
 if [ "x$CMD" == "xlist" ]
 then
-    if [ "x$CURSHA" != "x" ]
+    if [ "x$CURCHA" != "x" ]
     then
         echo "Playing:"
-        echo $CURSHA
+        echo $CURCHA
     fi
     echo "Channels:"
     cat $CHANNEL_FILE
