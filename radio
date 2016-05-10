@@ -10,11 +10,15 @@ if [ "x$CMD" == "x" ]
 then
     CMD=$(basename $0)
     CMD=${CMD^^}
-    echo $CMD
-    if ! echo $CMD | grep -q '^P[1-4]$'
+    if ! echo $CMD | grep -q '^P[0-4]$'
     then
         CMD=list
     fi
+fi
+
+if [ "$CMD" == "P0" ]
+then
+    CMD=stop
 fi
 
 if [ -e $PID_FILE ]
