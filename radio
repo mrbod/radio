@@ -55,7 +55,7 @@ then
     exit 0
 fi
 
-PLAYLIST=$(grep "^$CMD" $CHANNEL_FILE | cut -d ' ' -f 2)
+PLAYLIST=$(grep -i "^$CMD" $CHANNEL_FILE | cut -d ' ' -f 2)
 echo $PLAYLIST
 
 if [ "x$PLAYLIST" == "x" ]
